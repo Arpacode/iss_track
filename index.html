@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ISS TRACKER LIVE 3D</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="loading">
+  <div class="load-title">ISS TRACKER</div>
+  <div class="load-bar-wrap"><div class="load-bar" id="load-bar"></div></div>
+  <div class="load-msg" id="load-msg">INITIALIZING SYSTEMS…</div>
+</div>
+
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="corner bl"></div>
+<div class="corner br"></div>
+
+<div id="canvas-wrap"><canvas id="three-canvas"></canvas></div>
+
+<div id="header">
+  <h1>ISS LIVE TRACKER</h1>
+  <div class="sub">By @Arpan</div>
+</div>
+
+<div id="status-bar">
+  <div class="dot"></div>
+  <span>LIVE FEED ACTIVE</span>
+  <span>·</span>
+  <span id="update-timer">UPDATING…</span>
+</div>
+
+<div id="utc-clock">UTC 00:00:00</div>
+
+<div id="iss-label">ISS</div>
+<div id="pinch-hint">PINCH/SCROOL TO ZOOM(IN/OUT)</div>
+
+
+<div id="hud">
+
+  <div id="hud-actions">
+    <button class="ctrl-btn" id="btn-track" onclick="toggleTrack()">
+      <span class="btn-icon"></span>TRACK ISS
+    </button>
+    <button class="ctrl-btn" onclick="resetCamera()">
+      <span class="btn-icon"></span>RESET VIEW
+    </button>
+    <div id="zoom-group">
+      <button class="zoom-btn" id="btn-zoom-in">＋</button>
+      <button class="zoom-btn" id="btn-zoom-out">－</button>
+    </div>
+  </div>
+
+  <div id="hud-tabs">
+    <button class="tab-btn active" onclick="switchTab('pos')">POSITION</button>
+    <button class="tab-btn" onclick="switchTab('vel')">TELEMETRY</button>
+    <button class="tab-btn" onclick="switchTab('orb')">ORBITAL</button>
+  </div>
+
+  <div id="hud-drawer" class="open">
+
+    <div class="hud-panel active" id="hpanel-pos">
+      <div class="data-grid">
+        <div class="data-row"><span class="data-label">LATITUDE</span><span class="data-value highlight" id="lat">--°</span></div>
+        <div class="data-row"><span class="data-label">LONGITUDE</span><span class="data-value highlight" id="lon">--°</span></div>
+        <div class="data-row"><span class="data-label">ALTITUDE</span><span class="data-value amber" id="alt">-- km</span></div>
+        <div class="data-row"><span class="data-label">FOOTPRINT</span><span class="data-value" id="footprint">-- km</span></div>
+        <div class="data-row"><span class="data-label">VISIBILITY</span><span class="data-value" id="visibility">--</span></div>
+        <div class="data-row"><span class="data-label">DAYLIGHT</span><span class="data-value" id="daylight">--</span></div>
+      </div>
+      <div class="meter-section">
+        <div class="meter-wrap">
+          <div class="meter-label"><span>LAT TRACK</span><span id="lat-pct">0%</span></div>
+          <div class="meter-bar"><div class="meter-fill" id="lat-bar" style="width:50%"></div></div>
+        </div>
+        <div class="meter-wrap">
+          <div class="meter-label"><span>ALT RANGE</span><span>400–420 km</span></div>
+          <div class="meter-bar"><div class="meter-fill" id="alt-bar" style="width:60%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hud-panel" id="hpanel-vel">
+      <div style="display:flex; gap:0; align-items:stretch;">
+        <div class="data-grid" style="flex:1;">
+          <div class="data-row"><span class="data-label">VELOCITY</span><span class="data-value highlight" id="vel">-- km/s</span></div>
+          <div class="data-row"><span class="data-label">SPEED km/h</span><span class="data-value" id="vel-kmh">--</span></div>
+          <div class="data-row"><span class="data-label">ORBITAL PERIOD</span><span class="data-value amber" id="period">92.68 min</span></div>
+          <div class="data-row"><span class="data-label">INCLINATION</span><span class="data-value" id="incl">51.64°</span></div>
+          <div class="data-row"><span class="data-label">LAST UPDATED</span><span class="data-value" id="last-update" style="font-size:10px">--</span></div>
+        </div>
+        <div class="orbit-block">
+          <div id="orbit-count">--</div>
+          <div id="orbit-label">ORBITS<br>TODAY</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hud-panel" id="hpanel-orb">
+      <div class="data-grid">
+        <div class="data-row"><span class="data-label">APOGEE</span><span class="data-value amber" id="apogee">422 km</span></div>
+        <div class="data-row"><span class="data-label">PERIGEE</span><span class="data-value amber" id="perigee">408 km</span></div>
+        <div class="data-row"><span class="data-label">INCLINATION</span><span class="data-value" id="incl2">51.64°</span></div>
+        <div class="data-row"><span class="data-label">PERIOD</span><span class="data-value amber">92.68 min</span></div>
+        <div class="data-row"><span class="data-label">DAYLIGHT</span><span class="data-value" id="daylight2">--</span></div>
+        <div class="data-row"><span class="data-label">LAST UPDATE</span><span class="data-value" id="last-update2" style="font-size:10px">--</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="hud-hint">UPDATES EVERY 5s • Use chrome zoom option to adjust • @Arpacode&copy</div>
+
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js"
+  }
+}
+</script>
+<script type="module" src="script.js"></script>
+
+</body>
+</html>
