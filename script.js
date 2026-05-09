@@ -724,15 +724,15 @@ function animate() {
     const s = subsolpoint();
     
     
-    const earthRotationRadians = earth.rotation.y;
+    const earthRr= earth.rotation.y;
 const piConstant = Math.PI;
-const degreesInHalfCircle = 180;
-const radiansToDegreesFactor = degreesInHalfCircle / piConstant;
-const rotOffsetDeg = earthRotationRadians * radiansToDegreesFactor;
+const degreesinHC= 180;
+const radiansToDF= degreesinHC/ piConstant;
+const rotoffSD = earthRr* radiansToDF;
     
     
     
-    earthmat.uniforms.sunlon.value = s.lon - rotOffsetDeg;
+    earthmat.uniforms.sunlon.value = s.lon - rotoffSD;
     earthmat.uniforms.sunlat.value = s.lat;
   }
 
