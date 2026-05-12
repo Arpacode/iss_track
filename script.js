@@ -778,7 +778,7 @@ async function loadingboot() {
   earthmat.uniforms.sunlat.value = s.lat;
   sun.position.copy(atlas(s.lat, s.lon, 10));
   await fetchisslol();
-  setLoad(100, 'SYSTEMS ONLINE');
+  setLoad(100, 'SYSTEMS ONLINE/@Arpacode');
   setTimeout(() => loadscreem.classList.add('hide'), 400);
   syncbuttonsl();
   setInterval(fetchisslol, 5000);
